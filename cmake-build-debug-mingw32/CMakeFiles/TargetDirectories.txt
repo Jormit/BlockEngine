@@ -1,0 +1,3 @@
+C:/Users/jordan/ClionProjects/BlockEngine/cmake-build-debug-mingw32/CMakeFiles/edit_cache.dir
+C:/Users/jordan/ClionProjects/BlockEngine/cmake-build-debug-mingw32/CMakeFiles/BlockEngine.dir
+C:/Users/jordan/ClionProjects/BlockEngine/cmake-build-debug-mingw32/CMakeFiles/rebuild_cache.dir

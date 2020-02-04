@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/jordan/ClionProjects/BlockEngine/camera.cpp
+camera.hpp
+C:/Users/jordan/ClionProjects/BlockEngine/camera.hpp
+collision.hpp
+C:/Users/jordan/ClionProjects/BlockEngine/collision.hpp
+
+C:/Users/jordan/ClionProjects/BlockEngine/camera.hpp
+stdio.h
+-
+iostream
+-
+vector
+-
+GLFW/glfw3.h
+-
+glm/glm.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/gtc/type_ptr.hpp
+-
+stdlib.h
+-
+cmath
+-
+
+C:/Users/jordan/ClionProjects/BlockEngine/collision.hpp
+iostream
+-
+glm/glm.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/gtc/type_ptr.hpp
+-
+

@@ -13,7 +13,7 @@ int checkVerticalCollision(int chunk[16][16][16], glm::vec3 position) {
     for (int x = -1; x <= 1; x++){
         for (int z = -1; z <= 1; z++){
             if (inBounds(playerInt.x + x, playerInt.y - 1, playerInt.z + z)) {
-                if (chunk[playerInt.y - 1][playerInt.x + x][playerInt.z + z]) {
+                if (chunk[playerInt.y - 1][playerInt.x + x][playerInt.z + z] != -1) {
                     struct box block = getStandardBlock(playerInt.x + x, playerInt.y - 1, playerInt.z + z);
                     if (checkBoxCollision(playerBox,  block)) {
                         return BELOW;
@@ -37,7 +37,7 @@ void checkHorizontalCollision(int chunk[16][16][16], glm::vec3 position, int col
     for (int x = -1; x <= 1; x++){
         for (int z = -1; z <= 1; z++){
             if (inBounds(playerInt.x + x, playerInt.y - 1, playerInt.z + z)) {
-                if (chunk[playerInt.y - 1][playerInt.x + x][playerInt.z + z]) {
+                if (chunk[playerInt.y - 1][playerInt.x + x][playerInt.z + z] != -1) {
                     struct box block = getStandardBlock(playerInt.x + x, playerInt.y - 1, playerInt.z + z);
                     if (checkBoxCollision(playerBox,  block)) {
                         collisions[x + 1][z + 1] = 1;

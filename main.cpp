@@ -37,7 +37,7 @@ int main() {
     }
     Map map1;
     Shader cubeShader("../shaders/cube/vert.glsl", "../shaders/cube/frag.glsl");
-    Texture text1("../assets/textures/unnamed.jpg");
+    Texture text1("../assets/textures/texture.bmp");
 
     while (!glfwWindowShouldClose(window)) {
         // Calculate delta time.

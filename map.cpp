@@ -15,70 +15,147 @@ static int mHash[] = {208,34,231,213,32,248,233,56,161,78,24,140,71,48,140,254,2
                      135,176,183,191,253,115,184,21,233,58,129,233,142,39,128,211,118,137,139,255,
                      114,20,218,113,154,27,127,246,250,1,8,198,250,209,92,222,173,21,88,102,219};
 
+float texture_uneven[] = {0.0000f, 0.0625f, 0.0625f, 0.0625f, 0.0625f, 0.1250f, 0.0000f,
+                          0.0625f, 0.0000f, 0.1250f, 0.0625f, 0.1250f, 0.0000f, 0.0625f,
+                          0.0625f, 0.0625f, 0.0625f, 0.1250f, 0.0000f, 0.0625f, 0.0000f,
+                          0.1250f, 0.0625f, 0.1250f, 0.0000f, 0.0000f, 0.0000f, 0.0625f,
+                          0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f,
+                          0.0000f, 0.0000f, 0.1250f, 0.0000f, 0.1875f, 0.0625f, 0.1875f,
+                          0.0000f, 0.1250f, 0.0625f, 0.1875f, 0.0625f, 0.1250f, 0.0000f,
+                          0.0625f, 0.0000f, 0.1250f, 0.0625f, 0.1250f, 0.0000f, 0.0625f,
+                          0.0625f, 0.0625f, 0.0625f, 0.1250f, 0.0000f, 0.0625f, 0.0000f,
+                          0.1250f, 0.0625f, 0.1250f, 0.0000f, 0.0625f, 0.0625f, 0.0625f,
+                          0.0625f, 0.1250f};
+
+float texture_even[] = {  0.0000f, 0.0000f, 0.0625f, 0.0000f, 0.0625f, 0.0625f, 0.0000f,
+                          0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f, 0.0000f, 0.0000f,
+                          0.0625f, 0.0000f, 0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0000f,
+                          0.0625f, 0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0000f, 0.0625f,
+                          0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f,
+                          0.0000f, 0.0000f, 0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f,
+                          0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f, 0.0000f, 0.0000f,
+                          0.0000f, 0.0000f, 0.0625f, 0.0625f, 0.0625f, 0.0000f, 0.0000f,
+                          0.0625f, 0.0000f, 0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0000f,
+                          0.0625f, 0.0625f, 0.0625f, 0.0000f, 0.0000f, 0.0625f, 0.0000f,
+                          0.0625f, 0.0625f};
+
+int is_uneven[16] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
+
+float std_cube[] = {
+        // FRONT FACE.     // Normals.
+        0.0f, 0.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+        1.0f, 0.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+        1.0f, 1.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+        0.0f, 0.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+        0.0f, 1.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+        1.0f, 1.0f, 0.0f,  0.0f, 0.0f,-1.0f,
+
+        // BACK FACE.
+        0.0f, 0.0f,1.0f,  0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f,1.0f,  0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f,1.0f,  0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f,1.0f,  0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f,1.0f,  0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f,1.0f,  0.0f, 0.0f, 1.0f,
+
+        // BOTTOM FACE.
+        0.0f, 0.0f, 0.0f,  0.0f,-1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,  0.0f,-1.0f, 0.0f,
+        1.0f, 0.0f, 1.0f,  0.0f,-1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,  0.0f,-1.0f, 0.0f,
+        1.0f, 0.0f, 1.0f,  0.0f,-1.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,  0.0f,-1.0f, 0.0f,
+
+        // TOP FACE.
+        0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+
+        // LEFT FACE.
+        0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+
+        // RIGHT FACE.
+        1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 1.0f,  1.0f, 0.0f, 0.0f
+};
+
 Map::Map() {
     generateChunk();
+    chunk[15][15][15] = 5;
+    placeBlocks(chunk);
 
-    glm::vec3 translations[16][16][16];
-    placeBlocks(translations, chunk);
-
-    unsigned int instanceVBO;
-    glGenBuffers(1, &instanceVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * CHUNK_SIZE, translations, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    float vertices[] = { STD_CUBE };
 
     // Generate VBO, VAO for Quad.
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubes.size() * 36 * sizeof(vertex), &cubes[0], GL_STATIC_DRAW);
 
     // Setup Position, Normal and Texture attributes for Quad.
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
-
-    // Set instance data.
-    glEnableVertexAttribArray(3);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribDivisor(3, 1);
 }
 
 void Map::draw() {
     glBindVertexArray(VAO);
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, CHUNK_SIZE);
+    glDrawArrays(GL_TRIANGLES, 0, cubes.size() * 36 * sizeof(vertex));
 }
 
 void Map::resetChunk() {
     for (int y = 0; y < 16; y++){
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
-                chunk[y][x][z] = 0;
+                chunk[y][x][z] = -1;
             }
         }
     }
 }
 
-void Map::placeBlocks(glm::vec3 translations[16][16][16], int chunk[16][16][16]) {
+void Map::placeBlocks(int chunk[16][16][16]) {
     for (int y = 0; y < 16; y++){
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
-                if (chunk[y][x][z]) {
-                    translations[y][x][z] = glm::vec3((float)x, (float)y, -(float)z);
-                } else {
-                    translations[y][x][z] = glm::vec3(0.0f, 0.0f, 0.0f);
+                if (chunk[y][x][z] != NONE) {
+                    cubes.push_back(generateCube(glm::vec3((float)x, (float)y, -(float)z), chunk[y][x][z]));
                 }
             }
         }
     }
+}
+
+struct cube Map::generateCube(glm::vec3 translation, int texture) {
+    struct cube newCube{};
+    for (int i = 0; i < 36; i++) {
+        int vertexIndex = i * 6;
+        newCube.vertices[i].vertex = glm::vec3 (std_cube[vertexIndex], std_cube[vertexIndex + 1], std_cube[vertexIndex + 2]) + translation;
+        newCube.vertices[i].normal = glm::vec3 (std_cube[vertexIndex + 3], std_cube[vertexIndex + 4], std_cube[vertexIndex + 5]);
+
+        vertexIndex = i * 2;
+        if (is_uneven[texture]) {
+            newCube.vertices[i].texture = glm::vec2 (texture_uneven[vertexIndex] + TEXTURE_BLOCK_SIZE * texture, texture_uneven[vertexIndex + 1]);
+        } else {
+            newCube.vertices[i].texture = glm::vec2 (texture_even[vertexIndex] + TEXTURE_BLOCK_SIZE * texture, texture_even[vertexIndex + 1]);
+        }
+    }
+    return newCube;
 }
 
 void Map::generateChunk() {
@@ -91,12 +168,12 @@ void Map::generateChunk() {
             heightMap[x][z] = perlin2d((float)x, (float)z, 0.1, 4);
         }
     }
-
+    // Apply to chunk.
     for (int y = 0; y < 16; y++){
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
                 if (((float)(y)/(float)(16)) < heightMap[x][z]){
-                    chunk[y][x][z] = 1;
+                    chunk[y][x][z] = 0;
                 }
             }
         }

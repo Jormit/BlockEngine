@@ -6,11 +6,12 @@ Texture::Texture(const char* file) {
     glGenTextures(1, &(texture.id));
     glBindTexture(texture.type, texture.id);
     // Set wrapping parameters.
-    glTexParameteri(texture.type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(texture.type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set filtering parameters.
-    glTexParameteri(texture.type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texture.type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
     // Load texture image.
     int tex_width, tex_height, nrChannels;
     stbi_set_flip_vertically_on_load(true);

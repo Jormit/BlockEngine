@@ -82,3 +82,14 @@ struct box getStandardBlock(int x, int y, int z){
 int inBounds(int x, int y, int z) {
     return (x < 16 && x >= 0) && (y < 16 && y >= 0) && (z < 16 && z >= 0);
 }
+
+int isCollided(int chunk[16][16][16], glm::vec3 position) {
+    position.z = -(position.z - 1);
+    position.y = position.y - 1;
+    if (position.y < 16 && position.z < 16 && position.x < 16 && position.y >= 0 && position.z >= 0 && position.x >= 0) {
+        return chunk[(int)position.y][(int)position.x][(int)position.z] != -1;
+    } else {
+        return 0;
+    }
+
+}

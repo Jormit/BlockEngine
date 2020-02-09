@@ -32,3 +32,4 @@ int checkBoxCollision(struct box box1,  struct box box2);
 struct box getPlayerBox(glm::vec3 position);
 int inBounds(int x, int y, int z);
 struct box getStandardBlock(int x, int y, int z);
+int isCollided(int chunk[16][16][16], glm::vec3 position);

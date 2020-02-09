@@ -57,36 +57,30 @@ void Camera::processKeys(float deltaTime, GLFWwindow* window, int chunk[16][16][
             position += right * velocity;
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            if (!isJump){
+            if (onGround){
                 velocityY = 7.0f;
-                isJump = 1;
+                onGround = 0;
             }
         }
+    }
 
+    if (!onGround) {
         float gravity = -9.8f;
         velocityY += deltaTime * gravity;
         position.y += deltaTime * velocityY;
+    } else {
+        velocityY = -1.0f;
+        position.y += deltaTime * velocityY;
     }
 
-    if (checkVerticalCollision(chunk, position) == BELOW) {
-        position.y = prevPos.y;
-        velocityY = 0.0f;
-        isJump = 0;
-    }
+    onGround = 0;
 
-    int collisions[3][3];
-    checkHorizontalCollision(chunk, position, collisions);
+    resolve_collision(prevPos, glm::vec3(position.x - 0.3f, position.y, position.z - 0.3f), chunk);
+    resolve_collision(prevPos, glm::vec3(position.x + 0.3f, position.y, position.z - 0.3f), chunk);
+    resolve_collision(prevPos, glm::vec3(position.x - 0.3f, position.y, position.z + 0.3f), chunk);
+    resolve_collision(prevPos, glm::vec3(position.x + 0.3f, position.y, position.z + 0.3f), chunk);
+    resolve_collision(prevPos, glm::vec3(position.x, position.y, position.z), chunk);
 
-    if (collisions[0][1] || collisions[2][1]) {
-        position.x = prevPos.x;
-    } if (collisions[1][2] || collisions[1][0]) {
-        position.z = prevPos.z;
-    }
-    //printf("x: %f y: %f z: %f\n", position.x, position.y, position.z - 1);
-    /*printf("%d %d %d\n%d %d %d\n%d %d %d\n=====\n",
-            collisions[0][2], collisions[1][2], collisions[2][2],
-            collisions[0][1], collisions[1][1], collisions[2][1],
-            collisions[0][0], collisions[1][0], collisions[2][0]);*/
 }
 
 void Camera::processMouse(float xoffset, float yoffset) {
@@ -108,5 +102,39 @@ void Camera::processMouse(float xoffset, float yoffset) {
 
 glm::vec3 Camera::getPosition(){
     return position;
+}
+
+void Camera::resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[16][16][16]) {
+    // Check if is collided.
+    if (isCollided(chunk, pointPos)) {
+        // Restrict axis causing collision.
+        if (!isCollided(chunk, glm::vec3(pointPos.x, prevPos.y, pointPos.z))) {
+            position.y = prevPos.y;
+            onGround = 1;
+        } else if (!isCollided(chunk, glm::vec3(prevPos.x, pointPos.y, pointPos.z))) {
+            position.x = prevPos.x;
+
+        } else if (!isCollided(chunk, glm::vec3(pointPos.x, pointPos.y, prevPos.z))) {
+            position.z = prevPos.z;
+
+        } else if (!isCollided(chunk, glm::vec3(prevPos.x, pointPos.y, prevPos.z))) {
+            position.x = prevPos.x;
+            position.z = prevPos.z;
+
+        } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, pointPos.z))) {
+            position.x = prevPos.x;
+            position.y = prevPos.y;
+            onGround = 1;
+        } else if (!isCollided(chunk, glm::vec3(pointPos.x, prevPos.y, prevPos.z))) {
+            position.z = prevPos.z;
+            position.y = prevPos.y;
+            onGround = 1;
+        } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, prevPos.z))) {
+            position.x = prevPos.x;
+            position.z = prevPos.z;
+            position.y = prevPos.y;
+            onGround = 1;
+        }
+    }
 }
 

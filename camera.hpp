@@ -28,6 +28,8 @@ private:
     glm::vec3 up;
     glm::vec3 worldUp;
 
+    void resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[16][16][16]);
+
     float yaw;
     float pitch;
 
@@ -39,4 +41,5 @@ private:
     int freeMode = 0;
     float velocityY = 0.0f;
     int isJump = 0;
+    int onGround = 0;
 };

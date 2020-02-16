@@ -6,8 +6,8 @@ Texture::Texture(const char* file) {
     glGenTextures(1, &(texture.id));
     glBindTexture(texture.type, texture.id);
     // Set wrapping parameters.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // Set filtering parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -15,18 +15,28 @@ Texture::Texture(const char* file) {
     // Load texture image.
     int tex_width, tex_height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(file, &tex_width, &tex_height, &nrChannels, 0);
+    unsigned char *data = stbi_load(file, &tex_width, &tex_height, &nrChannels, STBI_default);
 
     // If texture loaded successfuly then generate mipmaps.
     if (data) {
-        glTexImage2D(texture.type, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        if (nrChannels == 3) {
+            glTexImage2D(texture.type, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        } else if (nrChannels == 4) {
+            glTexImage2D(texture.type, 0, GL_RGBA, tex_width, tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        } else {
+            cerr << "ERROR: " << "Invalid number of channels in " << file << endl;
+            exit(1);
+        }
         glGenerateMipmap(texture.type);
     }
     else {
-        cerr << "Could not load texture!" << endl;
+        cerr << "ERROR: " << "Could not load texture: " << file << endl;
         exit(1);
     }
     stbi_image_free(data);
+
+    cout << "Loaded texture: " << file << ", w = " << tex_width << ", h = " <<
+    tex_height << ", channels = " << nrChannels << endl;
 }
 
 void Texture::bindTexture(){

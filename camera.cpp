@@ -33,6 +33,10 @@ void Camera::processKeys(float deltaTime, GLFWwindow* window, int chunk[16][16][
     float velocity = deltaTime * speed;
     glm::vec3 prevPos = position;
 
+    fix_x = 0;
+    fix_y = 0;
+    fix_z = 0;
+
     if (freeMode) {
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             position += front * velocity;
@@ -75,12 +79,22 @@ void Camera::processKeys(float deltaTime, GLFWwindow* window, int chunk[16][16][
 
     onGround = 0;
 
-    resolve_collision(prevPos, glm::vec3(position.x - 0.3f, position.y, position.z - 0.3f), chunk);
-    resolve_collision(prevPos, glm::vec3(position.x + 0.3f, position.y, position.z - 0.3f), chunk);
-    resolve_collision(prevPos, glm::vec3(position.x - 0.3f, position.y, position.z + 0.3f), chunk);
-    resolve_collision(prevPos, glm::vec3(position.x + 0.3f, position.y, position.z + 0.3f), chunk);
-    resolve_collision(prevPos, glm::vec3(position.x, position.y, position.z), chunk);
+    resolve_collision(glm::vec3(prevPos.x - 0.3f, prevPos.y, prevPos.z - 0.3f),
+            glm::vec3(position.x - 0.3f, position.y, position.z - 0.3f), chunk);
+    resolve_collision(glm::vec3(prevPos.x + 0.3f, prevPos.y, prevPos.z - 0.3f),
+            glm::vec3(position.x + 0.3f, position.y, position.z - 0.3f), chunk);
+    resolve_collision(glm::vec3(prevPos.x - 0.3f, prevPos.y, prevPos.z + 0.3f),
+            glm::vec3(position.x - 0.3f, position.y, position.z + 0.3f), chunk);
+    resolve_collision(glm::vec3(prevPos.x + 0.3f, prevPos.y, prevPos.z + 0.3f),
+            glm::vec3(position.x + 0.3f, position.y, position.z + 0.3f), chunk);
 
+    if (fix_x) {
+        position.x = prevPos.x;
+    } if (fix_y) {
+        position.y = prevPos.y;
+    } if (fix_z) {
+        position.z = prevPos.z;
+    }
 }
 
 void Camera::processMouse(float xoffset, float yoffset) {
@@ -108,32 +122,37 @@ void Camera::resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[
     // Check if is collided.
     if (isCollided(chunk, pointPos)) {
         // Restrict axis causing collision.
+
         if (!isCollided(chunk, glm::vec3(pointPos.x, prevPos.y, pointPos.z))) {
-            position.y = prevPos.y;
+            fix_y = 1;
             onGround = 1;
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, pointPos.y, pointPos.z))) {
-            position.x = prevPos.x;
-
+            fix_x = 1;
         } else if (!isCollided(chunk, glm::vec3(pointPos.x, pointPos.y, prevPos.z))) {
-            position.z = prevPos.z;
-
+            fix_z = 1;
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, pointPos.y, prevPos.z))) {
-            position.x = prevPos.x;
-            position.z = prevPos.z;
+            fix_x = 1;
+            fix_z = 1;
 
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, pointPos.z))) {
-            position.x = prevPos.x;
-            position.y = prevPos.y;
+            fix_x = 1;
+            fix_y = 1;
+            printf("bye");
             onGround = 1;
         } else if (!isCollided(chunk, glm::vec3(pointPos.x, prevPos.y, prevPos.z))) {
-            position.z = prevPos.z;
-            position.y = prevPos.y;
+            fix_z = 1;
+            fix_y = 1;
+            printf("hi");
             onGround = 1;
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, prevPos.z))) {
-            position.x = prevPos.x;
-            position.z = prevPos.z;
-            position.y = prevPos.y;
+            fix_x = 1;
+            fix_z = 1;
+            fix_y = 1;
             onGround = 1;
+        } else {
+            fix_x = 1;
+            fix_z = 1;
+            fix_y = 1;
         }
     }
 }

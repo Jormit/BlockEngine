@@ -42,4 +42,7 @@ private:
     float velocityY = 0.0f;
     int isJump = 0;
     int onGround = 0;
+
+    int fix_x, fix_y, fix_z;
+
 };

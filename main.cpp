@@ -6,6 +6,7 @@
 #include "shader.hpp"
 #include "map.hpp"
 #include "texture.hpp"
+#include "config.hpp"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ void mouse_callback (GLFWwindow* window, double xpos, double ypos);
 GLFWwindow* initGL();
 
 // Camera setup.
-Camera camera(glm::vec3(7.0f, 30.0f, -7.0f), -90.0f, 0.0f, 5.0f, 0.1f);
+Camera camera(glm::vec3(7.0f, CHUNK_SIZE + 1.0f, -7.0f), -90.0f, 0.0f, 5.0f, 0.1f);
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;

@@ -19,12 +19,10 @@ void mouse_callback (GLFWwindow* window, double xpos, double ypos);
 GLFWwindow* initGL();
 
 // Camera setup.
-Camera camera(glm::vec3(7.0f, 20.0f, -7.0f), -90.0f, 0.0f, 5.0f, 0.1f);
+Camera camera(glm::vec3(7.0f, 30.0f, -7.0f), -90.0f, 0.0f, 5.0f, 0.1f);
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
-
-
 
 float deltaTime;
 float lastFrame;
@@ -61,6 +59,7 @@ int main() {
 
         // Draw geometry.
         map1.draw();
+        map1.focus(camera.getPosition(), camera.getFront());
 
         // Flip the buffers and check for events.
         glfwSwapBuffers(window);

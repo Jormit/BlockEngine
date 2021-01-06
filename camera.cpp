@@ -1,6 +1,7 @@
 #include "camera.hpp"
 #include "collision.hpp"
 
+
 using namespace std;
 
 Camera::Camera(glm::vec3 position, float yaw, float pitch, float speed, float sensitivity) {
@@ -28,7 +29,7 @@ void Camera::update_vectors() {
     up    = glm::normalize(glm::cross(right, front));
 }
 
-void Camera::processKeys(float deltaTime, GLFWwindow* window, int chunk[16][16][16]) {
+void Camera::processKeys(float deltaTime, GLFWwindow* window, int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]) {
     // Move the camera.
     float velocity = deltaTime * speed;
     glm::vec3 prevPos = position;
@@ -118,7 +119,11 @@ glm::vec3 Camera::getPosition(){
     return position;
 }
 
-void Camera::resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[16][16][16]) {
+glm::vec3 Camera::getFront() {
+    return front;
+}
+
+void Camera::resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]) {
     // Check if is collided.
     if (isCollided(chunk, pointPos)) {
         // Restrict axis causing collision.
@@ -137,12 +142,10 @@ void Camera::resolve_collision(glm::vec3 prevPos, glm::vec3 pointPos, int chunk[
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, pointPos.z))) {
             fix_x = 1;
             fix_y = 1;
-            printf("bye");
             onGround = 1;
         } else if (!isCollided(chunk, glm::vec3(pointPos.x, prevPos.y, prevPos.z))) {
             fix_z = 1;
             fix_y = 1;
-            printf("hi");
             onGround = 1;
         } else if (!isCollided(chunk, glm::vec3(prevPos.x, prevPos.y, prevPos.z))) {
             fix_x = 1;

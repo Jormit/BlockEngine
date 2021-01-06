@@ -10,9 +10,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdlib>
 
-#include "cubeVertices.hpp"
+#include "config.hpp"
 
-#define CHUNK_SIZE (16 * 16 * 16)
 #define TEXTURE_BLOCK_SIZE (0.0625f)
 #define NONE (-1)
 
@@ -36,13 +35,16 @@ class Map {
 public:
     Map();
     void draw();
-    int chunk[16][16][16];
+    void focus(glm::vec3 position, glm::vec3 front);
+
+    int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::vector<cube> cubes;
 private:
-    unsigned int VAO, VBO, instanceVBO, textureVBO;
+    unsigned int VAO, VBO;
 
     void resetChunk();
     struct cube generateCube(glm::vec3 translation, int texture);
-    void placeBlocks(int chunk[16][16][16]);
+    void placeBlocks(int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]);
     void generateChunk();
+    void highlight(int x, int y, int z);
 };

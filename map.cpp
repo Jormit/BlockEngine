@@ -93,9 +93,8 @@ float std_cube[] = {
 
 Map::Map() {
     generateChunk();
-    chunk[15][15][15] = 5;
+    chunk[CHUNK_SIZE - 1][CHUNK_SIZE - 1][CHUNK_SIZE - 1] = 5;
     placeBlocks(chunk);
-
 
     // Generate VBO, VAO for Quad.
     glGenVertexArrays(1, &VAO);
@@ -116,23 +115,24 @@ Map::Map() {
 
 void Map::draw() {
     glBindVertexArray(VAO);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     glDrawArrays(GL_TRIANGLES, 0, cubes.size() * 36 * sizeof(vertex));
 }
 
 void Map::resetChunk() {
-    for (int y = 0; y < 16; y++){
-        for (int x = 0; x < 16; x++){
-            for (int z = 0; z < 16; z++){
+    for (int y = 0; y < CHUNK_SIZE; y++){
+        for (int x = 0; x < CHUNK_SIZE; x++){
+            for (int z = 0; z < CHUNK_SIZE; z++){
                 chunk[y][x][z] = -1;
             }
         }
     }
 }
 
-void Map::placeBlocks(int chunk[16][16][16]) {
-    for (int y = 0; y < 16; y++){
-        for (int x = 0; x < 16; x++){
-            for (int z = 0; z < 16; z++){
+void Map::placeBlocks(int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]) {
+    for (int y = 0; y < CHUNK_SIZE; y++){
+        for (int x = 0; x < CHUNK_SIZE; x++){
+            for (int z = 0; z < CHUNK_SIZE; z++){
                 if (chunk[y][x][z] != NONE) {
                     cubes.push_back(generateCube(glm::vec3((float)x, (float)y, -(float)z), chunk[y][x][z]));
                 }
@@ -158,21 +158,58 @@ struct cube Map::generateCube(glm::vec3 translation, int texture) {
     return newCube;
 }
 
+void Map::focus(glm::vec3 position, glm::vec3 front) {
+    glm::vec3 looking_at = position;
+    while (1) {
+        looking_at += front;
+        glm::vec3 real_coord(looking_at.x, looking_at.y , -(looking_at.z - 1.0f));
+        if (real_coord.y < CHUNK_SIZE && real_coord.z < CHUNK_SIZE && real_coord.x < CHUNK_SIZE && real_coord.y >= 0
+        && real_coord.z >= 0 && real_coord.x >= 0) {
+            if (chunk[(int)real_coord.y][(int)real_coord.x][(int)real_coord.z] != -1) {
+                highlight((int)real_coord.x, (int)real_coord.y, (int)real_coord.z);
+                return;
+            }
+        } else {
+            return;
+        }
+    }
+}
+
+void Map::highlight(int x, int y, int z) {
+    unsigned int VAO_h, VBO_h;
+    glGenVertexArrays(1, &VAO_h);
+    glGenBuffers(1, &VBO_h);
+    glBindVertexArray(VAO_h);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_h);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    cube temp = generateCube(glm::vec3((float)x, (float)y, -(float)z), 15);
+    glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(vertex), &temp, GL_STATIC_DRAW);
+    glLineWidth(3);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glDrawArrays(GL_TRIANGLES, 0, 36 * sizeof(vertex));
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+}
+
 void Map::generateChunk() {
     resetChunk();
 
     // Generate a height map.
-    float heightMap[16][16];
-    for (int x = 0; x < 16; x++){
-        for (int z = 0; z < 16; z++){
+    float heightMap[CHUNK_SIZE][CHUNK_SIZE];
+    for (int x = 0; x < CHUNK_SIZE; x++){
+        for (int z = 0; z < CHUNK_SIZE; z++){
             heightMap[x][z] = perlin2d((float)x, (float)z, 0.1, 4);
         }
     }
     // Apply to chunk.
-    for (int y = 0; y < 16; y++){
-        for (int x = 0; x < 16; x++){
-            for (int z = 0; z < 16; z++){
-                if (((float)(y)/(float)(16)) < heightMap[x][z]){
+    for (int y = 0; y < CHUNK_SIZE; y++){
+        for (int x = 0; x < CHUNK_SIZE; x++){
+            for (int z = 0; z < CHUNK_SIZE; z++){
+                if (((float)(y)/(float)(CHUNK_SIZE)) < heightMap[x][z]){
                     chunk[y][x][z] = 0;
                 }
             }

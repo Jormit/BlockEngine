@@ -3,4 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-int isCollided(int chunk[16][16][16], glm::vec3 position);
+#include "config.hpp"
+
+int isCollided(int chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], glm::vec3 position);
